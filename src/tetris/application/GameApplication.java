@@ -22,10 +22,13 @@ import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.AnchorPane;
 
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import java.util.List;
+import javafx.geometry.Pos;
 
 public class GameApplication extends Application{
 	private Thread thread;
@@ -38,32 +41,61 @@ public class GameApplication extends Application{
 	private void stopGame(){
 		running=false;
 	}
+	List<Integer>sizeWindows;
 	@Override
 	public void start(Stage stage){
 		//StackPane stackPane=new StackPane();
-		HBox hbox=new HBox();
+		System.out.println("SCREEN_WIDTH : "+EnvironmentConstants.SCREEN_WIDTH);
+		System.out.println("SCREEN_HEIGHT : "+EnvironmentConstants.SCREEN_HEIGHT);
+		sizeWindows=EnvironmentConstants.computeEnvironSize();
+		Rectangle r = new Rectangle(25,25,250,250);
+		int leftSize=sizeWindows.get(0);
+		int centerSize=sizeWindows.get(1);
+		int rightSize=sizeWindows.get(2);
+		System.out.println("Size : "+sizeWindows);
+		//HBox hbox=new HBox();
+		//TilePane hbox=new TilePane();
+		AnchorPane anchorPane=new AnchorPane();
+		anchorPane.setMinHeight(EnvironmentConstants.SCREEN_HEIGHT);
+		anchorPane.setMinWidth(EnvironmentConstants.SCREEN_WIDTH);
+		//hbox.setTileAlignment(Pos.CENTER_RIGHT);
+		//hbox.setPadding(new Insets(1));
 		Pane left,center,right;
 		left=new Pane();
+		//left.prefWidth(leftSize);
+		//left.prefHeight(400);
+		left.setMinSize(leftSize,EnvironmentConstants.SCREEN_HEIGHT);
+		left.setStyle("-fx-background-color: cyan;");
+		//left.getChildren().add(r);
 		center=new Pane();
 		ColorInput ci = new ColorInput(center.getLayoutX(),
 				center.getLayoutY(),
 				center.getLayoutBounds().getWidth(),
 				center.getLayoutBounds().getHeight(),
 				Color.RED);
-		center.prefWidth(400);
-		center.prefHeight(400);
+		//center.prefWidth(centerSize);
+		//center.prefHeight(400);
 		//center.setEffect(ci);
+		center.setMinSize(centerSize,EnvironmentConstants.SCREEN_HEIGHT);
 		center.setStyle("-fx-background-color: red;");
-		Rectangle r = new Rectangle(25,25,250,250);
-		r.setFill(Color.BLUE);
-		center.getChildren().add(r);
+		r.setFill(Color.YELLOW);
+		//center.getChildren().add(r);
 		right=new Pane();
-		hbox.getChildren().addAll(left,center,right);
+		right.setMinSize(rightSize,EnvironmentConstants.SCREEN_HEIGHT);
+		//right.prefWidth(rightSize);
+		//right.prefHeight(400);
+		right.setStyle("-fx-background-color: purple;");
+		//right.getChildren().add(r);
+		//hbox.getChildren().addAll(left,center,right);
 		//hbox.getStyleClass().add("jfx-decorator-buttons-container");
-		hbox.setBackground(new Background(new BackgroundFill(Color.BLACK,
+		/*hbox.setBackground(new Background(new BackgroundFill(Color.BLACK,
 						CornerRadii.EMPTY,
-						Insets.EMPTY)));
-		Scene scene=new Scene(hbox,500,500);
+						Insets.EMPTY)));*/
+		anchorPane.setLeftAnchor(left,0.0);
+		anchorPane.setLeftAnchor(center,Double.valueOf(leftSize));
+		anchorPane.setLeftAnchor(right,Double.valueOf(leftSize+centerSize));
+		anchorPane.getChildren().addAll(left,center,right);
+		Scene scene=new Scene(anchorPane,EnvironmentConstants.SCREEN_WIDTH,EnvironmentConstants.SCREEN_HEIGHT);
 		stage.setScene(scene);
 		stage.setTitle("Tetris Game");
 		stage.setFullScreen(true);
@@ -87,13 +119,7 @@ public class GameApplication extends Application{
 			}
 		});
 		stage.show();
-		System.out.println("SCREEN_WIDTH : "+EnvironmentConstants.SCREEN_WIDTH);
-		System.out.println("SCREEN_HEIGHT : "+EnvironmentConstants.SCREEN_HEIGHT);
-		System.out.println("Size : "+EnvironmentConstants.computeEnvironSize());
 		startGame();
-	}
-	public static void main(String ...$){
-		launch($);
 	}
 	public class Game implements Runnable{
 		@Override
@@ -106,5 +132,9 @@ public class GameApplication extends Application{
 				exception.printStackTrace();
 			}
 		}
+	}
+	////////////main//////////
+	public static void main(String ...$){
+		launch($);
 	}
 }
