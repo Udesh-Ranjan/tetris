@@ -8,7 +8,7 @@ public abstract class Shape{
 	public Shape(){
 		rectangles=new ArrayList<>();
 	}
-	public abstract void drawShape(final GraphicsContext gc);
+	public abstract void draw(final GraphicsContext gc);
 	public abstract void translate(final int horPixels,final int verPixels);
 	public abstract void move(final int horPixels,final int verPixels);
 	public List<Rectangle> getRectangles(){

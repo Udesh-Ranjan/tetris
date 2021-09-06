@@ -44,7 +44,7 @@ import tetris.shapes.Cube;
 public class GameApplication extends Application{
 	private Thread thread;
 	private volatile boolean running;
-	AnimationTimer animationTimer=new AnimationClass();
+	AnimationTimer animationTimer;
 	private void startGame(){
 		System.out.println("Game started");
 		//running=true;
@@ -149,6 +149,7 @@ public class GameApplication extends Application{
 				System.exit(0);
 			}
 		});
+		animationTimer=new AnimationClass(canvas);
 		stage.show();
 		startGame();
 	}

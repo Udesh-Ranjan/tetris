@@ -1,44 +1,45 @@
 package tetris.shapes;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.canvas.GraphicsContext;
+import java.util.Objects;
 
 public class Rectangle{
 	private final javafx.scene.shape.Rectangle rectangle;
-	private Color fillColor,strokeColor;
+	
+	private static final double strokeWidth=1;
+	private static final Color stroke=Color.RED;
+	private static final Color fill=Color.WHITE;
+
+	private static void init(final javafx.scene.shape.Rectangle rectangle){
+		Objects.requireNonNull(rectangle);
+		rectangle.setFill(fill);
+		rectangle.setStroke(stroke);
+		rectangle.setStrokeWidth(strokeWidth);
+	}
 	public Rectangle(final javafx.scene.shape.Rectangle rectangle){
+		Objects.requireNonNull(rectangle);
 		this.rectangle=rectangle;
-		fillColor=Color.WHITE;
-		strokeColor=Color.BLACK;
+		init(this.rectangle);
 	}
 	public Rectangle(final double x,final double y,final double width,final double height){
 		rectangle=new javafx.scene.shape.Rectangle(x,y,width,height);
-		fillColor=Color.WHITE;
-		strokeColor=Color.BLACK;
+		init(rectangle);
 	}
 
-	public void setFillColor(final Color color){
-		fillColor=color;
-	}
-	public void setStrokeColor(final Color color){
-		strokeColor=color;
-	}
-	public Color getFillColor(){
-		return fillColor;
-	}
-	public Color getStrokeColor(){
-		return strokeColor;
-	}
-	public void drawRectangle(final GraphicsContext gc){
-		gc.setFill(fillColor);
-		gc.setStroke(strokeColor);
+	public void draw(final GraphicsContext gc){
+		gc.setFill(rectangle.getFill());
+		gc.setStroke(rectangle.getStroke());
+		//gc.setStroke(rectangle.getStrokeWidth());
+		gc.setLineWidth(rectangle.getStrokeWidth());
 		gc.fillRect(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
 	}
-	public void moveRectangle(final double hor,final double ver){
+	public void move(final double hor,final double ver){
 		setX(hor);
 		setY(ver);
 	}
-	public void translateRectangle(final int x,final int y){
+	public void translate(final int x,final int y){
 		translateX(x);
 		translateY(y);
 	}
@@ -71,6 +72,24 @@ public class Rectangle{
 	}
 	public double getHeight(){
 		return rectangle.getHeight();
+	}
+	public void setStroke(final Color strokeColor){
+		rectangle.setStroke(strokeColor);
+	}
+	public void setFill(final Color fill){
+		rectangle.setFill(fill);
+	}
+	public Paint  getStroke(){
+		return rectangle.getStroke();
+	}
+	public Paint getFill(){
+		return rectangle.getFill();
+	}
+	public double getStrokeWidth(){
+		return rectangle.getStrokeWidth();
+	}
+	public void setStrokeWidth(final double width){
+		rectangle.setStrokeWidth(width);
 	}
 }
 

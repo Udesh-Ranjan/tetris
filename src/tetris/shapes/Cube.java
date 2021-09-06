@@ -20,6 +20,7 @@ public class Cube extends Shape{
 	}
 	//should be called only one during initialization
 	private void initialize(){
+		rectangles.clear();
 		Rectangle topLeft=new Rectangle(Double.valueOf(topHor),Double.valueOf(topVer),
 				Double.valueOf(blockLength),Double.valueOf(blockLength));
 		Rectangle topRight=new Rectangle(Double.valueOf(topHor+blockLength),Double.valueOf(topVer),
@@ -29,6 +30,12 @@ public class Cube extends Shape{
 		Rectangle bottomRight=new Rectangle(Double.valueOf(topHor+blockLength),Double.valueOf(topVer+blockLength),
 				Double.valueOf(blockLength),Double.valueOf(blockLength));
 		rectangles.addAll(Stream.of(topLeft,topRight,bottomLeft,bottomRight).toList());
+		rectangles.stream()
+			.forEach(rectangle->{
+				rectangle.setFill(Color.CYAN);
+				rectangle.setStroke(Color.RED);
+				rectangle.setStrokeWidth(2);
+				});
 	}
 	@Override
 	public void move(final int hor,final int ver){
@@ -36,25 +43,30 @@ public class Cube extends Shape{
 		final int verShift=topVer-ver;
 		rectangles.stream()
 			.forEach(rectangle->{
-				rectangle.setX(rectangle.getX()+horShift);
-				rectangle.setY(rectangle.getY()+verShift);
+				/*rectangle.setX(rectangle.getX()+horShift);
+				  rectangle.setY(rectangle.getY()+verShift);
+				  */
+				rectangle.move(hor,ver);
 			});
 	}
 	@Override
 	public void translate(final int hor,final int ver){
 		rectangles.stream()
 			.forEach(rectangle->{
-				rectangle.setX(rectangle.getX()+hor);
-				rectangle.setY(rectangle.getY()+ver);
+				/*rectangle.setX(rectangle.getX()+hor);
+				  rectangle.setY(rectangle.getY()+ver);
+				  */
+				rectangle.translate(hor,ver);
 			});
 	}
 	@Override
-	public void drawShape(final GraphicsContext gc){
+	public void draw(final GraphicsContext gc){
 		Objects.requireNonNull(gc,"GraphicsContext must not be null");
 		gc.setFill(color);
 		rectangles.stream()
 			.forEach(rectangle->{
-				gc.fillRect(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
+				//gc.fillRect(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
+				rectangle.draw(gc);
 			});
 	}
 
