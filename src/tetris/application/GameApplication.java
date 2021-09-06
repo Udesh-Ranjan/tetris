@@ -28,6 +28,7 @@ import javafx.scene.layout.AnchorPane;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import java.util.List;
+import java.util.ArrayList;
 import javafx.geometry.Pos;
 
 import javafx.animation.AnimationTimer;
@@ -36,31 +37,41 @@ import javafx.beans.property.LongProperty;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
 
-import tetris.animation.AnimationClass;
+import tetris.controller.GameController;
 import tetris.shapes.Shape;
 import tetris.shapes.Cube;
+import tetris.backgroundManager.BackgroundManager;
+import tetris.backgroundManager.SolidBackgroundManager;
+import tetris.controller.GameController;
 
 public class GameApplication extends Application{
 	private Thread thread;
 	private volatile boolean running;
-	AnimationTimer animationTimer;
+	GameController gameController;
 	private void startGame(){
 		System.out.println("Game started");
 		//running=true;
 		//thread=new Thread(new Game());
 		//thread.start();
-		animationTimer.start();
+		gameController.start();
 	}
 	private void stopGame(){
 		System.out.println("Game stopped");
 		//running=false;
-		animationTimer.stop();
+		gameController.stop();
 	}
+	Pane left,center,right,centerTop;
 	List<Integer>sizeWindows;
-	@Override
-	public void start(Stage stage){
-		//StackPane stackPane=new StackPane();
+	private final List<EventHandler<KeyEvent>>keyEventHandlers=new ArrayList<>();
+	private Canvas canvas;
+	private Scene scene;
+	private BackgroundManager backgroundManager;
+
+	////////GameApplication////
+	public GameApplication(){
 		System.out.println("SCREEN_WIDTH : "+EnvironmentConstants.SCREEN_WIDTH);
 		System.out.println("SCREEN_HEIGHT : "+EnvironmentConstants.SCREEN_HEIGHT);
 		sizeWindows=EnvironmentConstants.computeEnvironSize();
@@ -79,7 +90,6 @@ public class GameApplication extends Application{
 		anchorPane.setMinWidth(EnvironmentConstants.SCREEN_WIDTH);
 		//hbox.setTileAlignment(Pos.CENTER_RIGHT);
 		//hbox.setPadding(new Insets(1));
-		Pane left,center,right,centerTop;
 		left=new Pane();
 		//left.prefWidth(leftSize);
 		//left.prefHeight(400);
@@ -98,7 +108,7 @@ public class GameApplication extends Application{
 		center.setMinSize(centerSize,EnvironmentConstants.VERTICAL_BLOCKS*blockSizePixels);
 		center.setStyle("-fx-background-color: black;");
 		r.setFill(Color.YELLOW);
-		Canvas canvas=new Canvas(centerSize,EnvironmentConstants.SCREEN_HEIGHT);
+		canvas=new Canvas(centerSize,EnvironmentConstants.SCREEN_HEIGHT);
 		GraphicsContext gc=canvas.getGraphicsContext2D();
 		gc.setFill(Color.BLUE);
 		gc.fillRect(0,75,100,100);
@@ -123,10 +133,18 @@ public class GameApplication extends Application{
 		anchorPane.setTopAnchor(centerTop,0.0);
 		anchorPane.setLeftAnchor(centerTop,Double.valueOf(leftSize));
 		anchorPane.setLeftAnchor(right,Double.valueOf(leftSize+centerSize));
-		anchorPane.setTopAnchor(center,Double.valueOf(EnvironmentConstants.SCREEN_HEIGHT-EnvironmentConstants.VERTICAL_BLOCKS*blockSizePixels));
+		anchorPane.setTopAnchor(center,
+				Double.valueOf(EnvironmentConstants.SCREEN_HEIGHT-EnvironmentConstants.VERTICAL_BLOCKS*blockSizePixels));
 		anchorPane.setLeftAnchor(center,Double.valueOf(leftSize));
 		anchorPane.getChildren().addAll(left,center,centerTop,right);
-		Scene scene=new Scene(anchorPane,EnvironmentConstants.SCREEN_WIDTH,EnvironmentConstants.SCREEN_HEIGHT);
+		scene=new Scene(anchorPane,EnvironmentConstants.SCREEN_WIDTH,EnvironmentConstants.SCREEN_HEIGHT);
+		scene.setOnKeyPressed(this::handleKeyEvents);
+		backgroundManager=new SolidBackgroundManager(canvas,EnvironmentConstants.HORIZONTAL_BLOCKS, 
+				EnvironmentConstants.VERTICAL_BLOCKS,blockSizePixels);
+		gameController=new GameController(canvas,backgroundManager,this);
+	}
+	@Override
+	public void start(Stage stage){
 		stage.setScene(scene);
 		stage.setTitle("Tetris Game");
 		stage.setFullScreen(true);
@@ -149,9 +167,20 @@ public class GameApplication extends Application{
 				System.exit(0);
 			}
 		});
-		animationTimer=new AnimationClass(canvas);
 		stage.show();
 		startGame();
+	}
+	public Pane getLeft(){
+		return left;
+	}
+	public Pane getRight(){
+		return right;
+	}
+	public Pane getCenter(){
+		return center;
+	}
+	public Canvas getCanvas(){
+		return canvas;
 	}
 	/*public class Game implements Runnable{
 	  @Override
@@ -182,6 +211,16 @@ public class GameApplication extends Application{
 	  }
 	}
 	*/
+	private void handleKeyEvents(KeyEvent keyEvent){
+		keyEventHandlers.stream()
+			.forEach(eventHandler->eventHandler.handle(keyEvent));
+	}
+	public void registerForKeyEvents(EventHandler<KeyEvent>eventHandler){
+		keyEventHandlers.add(eventHandler);
+	}
+	public void unregisterForKeyEvents(EventHandler<KeyEvent>eventHandler){
+		keyEventHandlers.remove(eventHandler);
+	}
 	////////////main//////////
 	public static void main(String ...$){
 		launch($);
