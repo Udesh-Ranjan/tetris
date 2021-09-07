@@ -69,6 +69,7 @@ public class GameApplication extends Application{
 	private Canvas canvas;
 	private Scene scene;
 	private BackgroundManager backgroundManager;
+	public final int blockSizePixels;
 
 	////////GameApplication////
 	public GameApplication(){
@@ -80,7 +81,7 @@ public class GameApplication extends Application{
 		int leftSize=sizeWindows.get(0);
 		int centerSize=sizeWindows.get(1);
 		int rightSize=sizeWindows.get(2);
-		final int blockSizePixels=centerSize/EnvironmentConstants.HORIZONTAL_BLOCKS;
+		blockSizePixels=centerSize/EnvironmentConstants.HORIZONTAL_BLOCKS;
 		System.out.println("Size : "+sizeWindows);
 		System.out.println("blockSizePixels : "+blockSizePixels);
 		//HBox hbox=new HBox();

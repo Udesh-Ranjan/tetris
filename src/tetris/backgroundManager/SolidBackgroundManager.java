@@ -49,4 +49,14 @@ public class SolidBackgroundManager extends BackgroundManager{
 			}
 		}
 	}
+	@Override
+	public void addShape(final Shape shape){
+		shape.rectangles.stream()
+			.forEach(rectangle->{
+				int row=(int)rectangle.getY()/blockSizePixels;
+				int col=(int)rectangle.getX()/blockSizePixels;
+				block.setBlockOccupied(row,col);
+				block.setBlockColor(rectangle.getFill());
+			});
+	}
 }

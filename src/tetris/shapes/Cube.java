@@ -4,38 +4,35 @@ import javafx.scene.paint.Color;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.stream.Stream;
 import java.util.Objects;
+import tetris.enums.DIRECTION;
 
 public class Cube extends Shape{
-	private int blockLength=50;
+	private int blockSizePixels=50;
 	private int topHor=0,topVer=0;
 	private Color color=Color.CYAN;
-	public Cube(){
-		super();
-		initialize();
-	}
-	public Cube(final int BLOCK_LENGTH){
-		super();
-		blockLength=BLOCK_LENGTH;
+	public Cube(final int blockSizePixels){
+		super(blockSizePixels);
+		this.blockSizePixels=blockSizePixels;
 		initialize();
 	}
 	//should be called only one during initialization
 	private void initialize(){
 		rectangles.clear();
 		Rectangle topLeft=new Rectangle(Double.valueOf(topHor),Double.valueOf(topVer),
-				Double.valueOf(blockLength),Double.valueOf(blockLength));
-		Rectangle topRight=new Rectangle(Double.valueOf(topHor+blockLength),Double.valueOf(topVer),
-				Double.valueOf(blockLength),Double.valueOf(blockLength));
-		Rectangle bottomLeft=new Rectangle(Double.valueOf(topHor),Double.valueOf(topVer+blockLength),
-				Double.valueOf(blockLength),Double.valueOf(blockLength));
-		Rectangle bottomRight=new Rectangle(Double.valueOf(topHor+blockLength),Double.valueOf(topVer+blockLength),
-				Double.valueOf(blockLength),Double.valueOf(blockLength));
+				Double.valueOf(blockSizePixels),Double.valueOf(blockSizePixels));
+		Rectangle topRight=new Rectangle(Double.valueOf(topHor+blockSizePixels),Double.valueOf(topVer),
+				Double.valueOf(blockSizePixels),Double.valueOf(blockSizePixels));
+		Rectangle bottomLeft=new Rectangle(Double.valueOf(topHor),Double.valueOf(topVer+blockSizePixels),
+				Double.valueOf(blockSizePixels),Double.valueOf(blockSizePixels));
+		Rectangle bottomRight=new Rectangle(Double.valueOf(topHor+blockSizePixels),Double.valueOf(topVer+blockSizePixels),
+				Double.valueOf(blockSizePixels),Double.valueOf(blockSizePixels));
 		rectangles.addAll(Stream.of(topLeft,topRight,bottomLeft,bottomRight).toList());
 		rectangles.stream()
 			.forEach(rectangle->{
 				rectangle.setFill(Color.CYAN);
 				rectangle.setStroke(Color.RED);
 				rectangle.setStrokeWidth(2);
-				});
+			});
 	}
 	@Override
 	public void move(final int hor,final int ver){
@@ -69,5 +66,19 @@ public class Cube extends Shape{
 				rectangle.draw(gc);
 			});
 	}
-
+	@Override
+	public void transtate(final DIRECTION direction){
+		Objects.requireNonNull(direction);
+		double x=0,y=0;
+		if(direction==DIRECTION.UP)
+			y-=blockSizePixels;
+		else if(direction==DIRECTION.DOWN)
+			y+=blockSizePixels;
+		else if(direction==DIRECTION.LEFT)
+			x-=blockSizePixels;
+		else if(direction==RIGHT)
+			x+=blockSizePixels;
+		rectangles.stream()
+			.forEach(rect->rect.translate(x,y));
+	}
 }

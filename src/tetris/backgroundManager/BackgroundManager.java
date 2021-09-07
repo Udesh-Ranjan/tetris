@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import tetris.enums.DIRECTION;
 import java.util.Objects;
 import tetris.shapes.Shape;
+import javafx.scene.canvas.GraphicsContext;
 
 /////////BACKGROUND MANAGER////////
 public abstract class BackgroundManager{
@@ -12,15 +13,18 @@ public abstract class BackgroundManager{
 	public final int HORIZONTAL_BLOCKS,VERTICAL_BLOCKS;
 	public final int blockSizePixels;
 	public final Block block;
+	public final GraphicsContext gc;
 	public BackgroundManager(final Canvas canvas,final int HORIZONTAL_BLOCKS,final int VERTICAL_BLOCKS,final int blockSizePixels){
 		this.canvas=canvas;
 		this.HORIZONTAL_BLOCKS=HORIZONTAL_BLOCKS;
 		this.VERTICAL_BLOCKS=VERTICAL_BLOCKS;
 		this.blockSizePixels=blockSizePixels;
 		block=new Block(HORIZONTAL_BLOCKS,VERTICAL_BLOCKS);
+		gc=canvas.getGraphicsContext2D();
 	}
 	public abstract void drawBackground();
 	public abstract boolean isCollision(Shape shape,DIRECTION direction); 
+	public abstract void addShape(Shape shape);
 	//////////BLOCK//////////
 	public class Block{
 		public final int row,col;

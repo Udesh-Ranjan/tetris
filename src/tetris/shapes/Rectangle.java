@@ -79,11 +79,11 @@ public class Rectangle{
 	public void setFill(final Color fill){
 		rectangle.setFill(fill);
 	}
-	public Paint  getStroke(){
-		return rectangle.getStroke();
+	public Color getStroke(){
+		return (Color)rectangle.getStroke();
 	}
-	public Paint getFill(){
-		return rectangle.getFill();
+	public Color getFill(){
+		return (Color) rectangle.getFill();
 	}
 	public double getStrokeWidth(){
 		return rectangle.getStrokeWidth();
