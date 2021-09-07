@@ -17,7 +17,7 @@ import tetris.fallingBlock.FallingBlock;
 
 public class GameController extends AnimationTimer implements EventHandler<KeyEvent>{
 	private final int BLOCK_LENGTH;
-	private final LongProperty lastUpdateTime;
+	private final LongProperty lastTimeUpdated;
 	private final LongProperty time;//totalTime in nano
 	//private Cube cube;
 	private Canvas canvas;
@@ -34,29 +34,41 @@ public class GameController extends AnimationTimer implements EventHandler<KeyEv
 		BLOCK_LENGTH=50;
 		this.canvas=canvas;
 		//cube=new Cube(50);
-		fallingBlock=new FallingBlock(this.backgroundManager,new Cube(blockSizePixels));
-		lastUpdateTime=new SimpleLongProperty(0);	
+		lastTimeUpdated=new SimpleLongProperty(0);	
 		time=new SimpleLongProperty(System.currentTimeMillis()*1000000l);
 		this.backgroundManager=backgroundManager;
 		gameApplication=application;
 		gameApplication.registerForKeyEvents(this);
+		fallingBlock=new FallingBlock(this.backgroundManager,new Cube(blockSizePixels));
 	}
-
+	private static final long FALLING_BLOCK_DELAY=1000000000l;//nano
+	private static final long BACKGROUND_UPDATE_DELAY=500000000l;//nano 
+	private LongProperty lasttimeBgUpdated=new SimpleLongProperty();
+	private LongProperty lasttimeBlockFell=new SimpleLongProperty();
 	@Override
 	public void handle(long nano){
-		if(lastUpdateTime.get()>0){
-			System.out.println("handle");
+		if(lastTimeUpdated.get()>0){
+			//System.out.println("handle");
 			//TODO
-			final long elapsedTime=nano-lastUpdateTime.get();
-			System.out.println("elapsedTime : "+elapsedTime);
+			final long elapsedTime=nano-lastTimeUpdated.get();
+			//System.out.println("elapsedTime : "+elapsedTime);
 			//if(elapsedTime>=1000000000l){
-			System.out.println("Cube drawn");
-			fallingBlock.draw();
+			//System.out.println("Cube drawn");
+			//fallingBlock.draw();
 			//cube.draw(canvas.getGraphicsContext2D());
 			//}
+			if(nano-lasttimeBgUpdated.get()>=BACKGROUND_UPDATE_DELAY){
+				backgroundManager.drawBackground();
+				fallingBlock.draw();
+				lasttimeBgUpdated.set(nano);
+			}
+			if(nano-lasttimeBlockFell.get()>=FALLING_BLOCK_DELAY){
+				fallingBlock.fall();
+				lasttimeBlockFell.set(nano);
+			}
 		}
 
-		lastUpdateTime.set(nano);	
+		lastTimeUpdated.set(nano);	
 		//time.set(time.get()+nano);
 	}
 

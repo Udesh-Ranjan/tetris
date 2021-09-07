@@ -8,7 +8,7 @@ import tetris.enums.DIRECTION;
 
 public class Cube extends Shape{
 	private int blockSizePixels=50;
-	private int topHor=0,topVer=0;
+	private double topHor=0,topVer=0;
 	private Color color=Color.CYAN;
 	public Cube(final int blockSizePixels){
 		super(blockSizePixels);
@@ -35,9 +35,9 @@ public class Cube extends Shape{
 			});
 	}
 	@Override
-	public void move(final int hor,final int ver){
-		final int horShift=topHor-hor;
-		final int verShift=topVer-ver;
+	public void move(final double hor,final double ver){
+		final double horShift=topHor-hor;
+		final double verShift=topVer-ver;
 		rectangles.stream()
 			.forEach(rectangle->{
 				/*rectangle.setX(rectangle.getX()+horShift);
@@ -47,7 +47,7 @@ public class Cube extends Shape{
 			});
 	}
 	@Override
-	public void translate(final int hor,final int ver){
+	public void translate(final double hor,final double ver){
 		rectangles.stream()
 			.forEach(rectangle->{
 				/*rectangle.setX(rectangle.getX()+hor);
@@ -67,7 +67,7 @@ public class Cube extends Shape{
 			});
 	}
 	@Override
-	public void transtate(final DIRECTION direction){
+	public void translate(final DIRECTION direction){
 		Objects.requireNonNull(direction);
 		double x=0,y=0;
 		if(direction==DIRECTION.UP)
@@ -76,9 +76,12 @@ public class Cube extends Shape{
 			y+=blockSizePixels;
 		else if(direction==DIRECTION.LEFT)
 			x-=blockSizePixels;
-		else if(direction==RIGHT)
+		else if(direction==DIRECTION.RIGHT)
 			x+=blockSizePixels;
+		final double _x,_y;
+		_x=x;
+		_y=y;
 		rectangles.stream()
-			.forEach(rect->rect.translate(x,y));
+			.forEach(rect->rect.translate(_x,_y));
 	}
 }

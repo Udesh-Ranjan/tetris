@@ -14,6 +14,7 @@ public abstract class BackgroundManager{
 	public final int blockSizePixels;
 	public final Block block;
 	public final GraphicsContext gc;
+
 	public BackgroundManager(final Canvas canvas,final int HORIZONTAL_BLOCKS,final int VERTICAL_BLOCKS,final int blockSizePixels){
 		this.canvas=canvas;
 		this.HORIZONTAL_BLOCKS=HORIZONTAL_BLOCKS;
@@ -22,9 +23,15 @@ public abstract class BackgroundManager{
 		block=new Block(HORIZONTAL_BLOCKS,VERTICAL_BLOCKS);
 		gc=canvas.getGraphicsContext2D();
 	}
+
 	public abstract void drawBackground();
+
 	public abstract boolean isCollision(Shape shape,DIRECTION direction); 
+
 	public abstract void addShape(Shape shape);
+
+	public abstract boolean isOutOfBoundary(final Shape shape,final DIRECTION direction);
+
 	//////////BLOCK//////////
 	public class Block{
 		public final int row,col;

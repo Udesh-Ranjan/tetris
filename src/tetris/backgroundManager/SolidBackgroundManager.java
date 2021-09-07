@@ -7,6 +7,8 @@ import javafx.scene.canvas.Canvas;
 import java.util.List;
 import tetris.shapes.Shape;
 import tetris.enums.DIRECTION;
+import java.util.concurrent.atomic.AtomicBoolean;
+import spals.shaded.com.google.common.util.concurrent.AtomicDouble;
 
 public class SolidBackgroundManager extends BackgroundManager{
 
@@ -18,24 +20,61 @@ public class SolidBackgroundManager extends BackgroundManager{
 		final List<Rectangle>rectangles=shape.getRectangles();
 		for(int i=0;i<block.row;i++){
 			for(int j=0;j<block.col;j++){
-				double topX=blockSizePixels*i;
-				double topY=blockSizePixels*j;
-				if(direction==DIRECTION.UP)
-					topY-=blockSizePixels;
-				else if(direction==DIRECTION.DOWN)
-					topY+=blockSizePixels;
-				else if(direction==DIRECTION.LEFT)
-					topX-=blockSizePixels;
-				else if(direction==DIRECTION.RIGHT)
-					topX+=blockSizePixels;
-				else throw new IllegalStateException("Direction value if not diefined");
-				for(final Rectangle rectangle:rectangles){
-					if(rectangle.getX()==topX && rectangle.getY()==topY)
-						return true;
+				if(block.isBlockOccupied(i,j)){
+					double topX=blockSizePixels*i;
+					double topY=blockSizePixels*j;
+					if(direction==DIRECTION.UP)
+						topY-=blockSizePixels;
+					else if(direction==DIRECTION.DOWN)
+						topY+=blockSizePixels;
+					else if(direction==DIRECTION.LEFT)
+						topX-=blockSizePixels;
+					else if(direction==DIRECTION.RIGHT)
+						topX+=blockSizePixels;
+					else throw new IllegalStateException("Direction value if not diefined");
+					for(final Rectangle rectangle:rectangles){
+						if(rectangle.getX()==topX && rectangle.getY()==topY)
+							return true;
+					}
 				}
 			}
 		}
 		return false;
+	}
+	@Override
+	public boolean isOutOfBoundary(final Shape shape,final DIRECTION direction){
+		AtomicDouble x,y;
+		x=new AtomicDouble(0);
+		y=new AtomicDouble(0);
+		if(direction==DIRECTION.UP)
+			y.set(y.get()-blockSizePixels);
+		else if(direction==DIRECTION.DOWN)
+			y.set(y.get()+blockSizePixels);
+		else if(direction==DIRECTION.LEFT)
+			x.set(x.get()-blockSizePixels);
+		else if(direction==DIRECTION.RIGHT)
+			x.set(x.get()+blockSizePixels);
+		final AtomicBoolean outOfBoundary=new AtomicBoolean(false);
+		shape.rectangles.stream()
+			.forEach(rectangle->{
+				if(direction==DIRECTION.LEFT){
+					if(rectangle.getX()+x.get()<0)
+						outOfBoundary.set(true);//return true;
+				}
+				if(direction==DIRECTION.RIGHT){
+					if(rectangle.getX()+rectangle.getWidth()+x.get()<blockSizePixels*block.col)
+						outOfBoundary.set(true);//return true;
+				}
+				if(direction==DIRECTION.UP){
+					if(rectangle.getY()+y.get()<0)
+						outOfBoundary.set(true);//return true;
+				}
+				if(direction==DIRECTION.DOWN){
+					if(rectangle.getY()+rectangle.getHeight()+y.get()>blockSizePixels*block.row)
+						outOfBoundary.set(true);//return true;
+				}
+			});
+		return outOfBoundary.get();
 	}
 	@Override
 	public void drawBackground(){
@@ -56,7 +95,7 @@ public class SolidBackgroundManager extends BackgroundManager{
 				int row=(int)rectangle.getY()/blockSizePixels;
 				int col=(int)rectangle.getX()/blockSizePixels;
 				block.setBlockOccupied(row,col);
-				block.setBlockColor(rectangle.getFill());
+				block.setBlockColor(row,col,rectangle.getFill());
 			});
 	}
 }

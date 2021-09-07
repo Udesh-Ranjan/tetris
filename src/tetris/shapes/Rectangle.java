@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Rectangle{
 	private final javafx.scene.shape.Rectangle rectangle;
-	
+
 	private static final double strokeWidth=1;
 	private static final Color stroke=Color.RED;
 	private static final Color fill=Color.WHITE;
@@ -39,7 +39,8 @@ public class Rectangle{
 		setX(hor);
 		setY(ver);
 	}
-	public void translate(final int x,final int y){
+	public void translate(final double x,final double y){
+		System.out.println("translate x: "+x+" y: "+y);
 		translateX(x);
 		translateY(y);
 	}
@@ -47,9 +48,11 @@ public class Rectangle{
 		rectangle.setX(x);
 	}
 	public void translateX(final double x){
+		System.out.println("transtateX "+x);
 		rectangle.setX(getX()+x);
 	}
 	public void translateY(final double y){
+		System.out.println("transtateY "+y);
 		rectangle.setY(getY()+y);
 	}
 	public void setY(final double y){

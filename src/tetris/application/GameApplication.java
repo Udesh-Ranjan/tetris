@@ -95,7 +95,7 @@ public class GameApplication extends Application{
 		//left.prefWidth(leftSize);
 		//left.prefHeight(400);
 		left.setMinSize(leftSize,EnvironmentConstants.SCREEN_HEIGHT);
-		left.setStyle("-fx-background-color: grey;");
+		left.setStyle("-fx-background-color: lime;");
 		//left.getChildren().add(r);
 		center=new Pane();
 		ColorInput ci = new ColorInput(center.getLayoutX(),
