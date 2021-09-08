@@ -8,7 +8,7 @@ import java.util.List;
 import tetris.shapes.Shape;
 import tetris.enums.DIRECTION;
 import java.util.concurrent.atomic.AtomicBoolean;
-import spals.shaded.com.google.common.util.concurrent.AtomicDouble;
+import com.google.common.util.concurrent.AtomicDouble;
 
 public class SolidBackgroundManager extends BackgroundManager{
 
