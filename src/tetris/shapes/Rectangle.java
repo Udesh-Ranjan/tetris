@@ -34,6 +34,7 @@ public class Rectangle{
 		//gc.setStroke(rectangle.getStrokeWidth());
 		gc.setLineWidth(rectangle.getStrokeWidth());
 		gc.fillRect(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
+		gc.strokeRect(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
 	}
 	public void move(final double hor,final double ver){
 		setX(hor);
@@ -93,6 +94,15 @@ public class Rectangle{
 	}
 	public void setStrokeWidth(final double width){
 		rectangle.setStrokeWidth(width);
+	}
+	@Override
+	public String toString(){
+		return "X : "+getX()+"\n"+
+			"Y : "+getY()+"\n"+
+			"width : "+getWidth()+"\n"+
+			"height : "+getHeight()+"\n"+
+			"fill : "+getFill()+"\n"+
+			"stroke : "+getStroke()+"\n";
 	}
 }
 

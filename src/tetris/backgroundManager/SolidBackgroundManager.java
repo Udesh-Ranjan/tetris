@@ -108,9 +108,13 @@ public class SolidBackgroundManager extends BackgroundManager{
 		//gc.fillRect(0,0,HOROZONTAL_BLOCKS*blockSizePixel,VERTICAL_BLOCKS*blockSizePixel);
 		for(int i=0;i<block.row;i++){
 			for(int j=0;j<block.col;j++){
-				Color color=block.colors[i][j];
+				/*Color color=block.colors[i][j];
 				gc.setFill(color);
 				gc.fillRect(j*blockSizePixels,i*blockSizePixels,blockSizePixels,blockSizePixels);
+				*/
+				Rectangle rectangle=block.rectangles[i][j];
+				System.out.println("rectangle : "+rectangle);
+				rectangle.draw(gc);
 			}
 		}
 	}
@@ -120,8 +124,8 @@ public class SolidBackgroundManager extends BackgroundManager{
 			.forEach(rectangle->{
 				int row=(int)rectangle.getY()/blockSizePixels;
 				int col=(int)rectangle.getX()/blockSizePixels;
-				block.setBlockOccupied(row,col,rectangle.getFill());
-				block.setBlockColor(row,col,rectangle.getFill());
+				block.setBlockOccupied(row,col,rectangle);
+				//block.setBlockColor(row,col,rectangle.getFill());
 			});
 	}
 }
