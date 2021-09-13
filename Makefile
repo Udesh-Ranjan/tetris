@@ -1,3 +1,5 @@
+tetris: clean build launch
+
 build:
 	cd src && javac -Xlint -cp :/home/dev/Downloads/jarfiles/javafx-sdk-16/lib/\*:/home/dev/Downloads/jarfiles/guava/\* tetris/application/GameApplication.java -d ../out && cd -
 
@@ -9,4 +11,3 @@ clean:
 
 .PHONY: clean
 
-tetris: clean build launch

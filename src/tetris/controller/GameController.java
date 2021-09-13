@@ -39,7 +39,7 @@ public class GameController extends AnimationTimer implements EventHandler<KeyEv
 		this.backgroundManager=backgroundManager;
 		gameApplication=application;
 		gameApplication.registerForKeyEvents(this);
-		fallingBlock=new FallingBlock(this.backgroundManager,new Cube(blockSizePixels));
+		fallingBlock=new FallingBlock(this.backgroundManager,new Cube(blockSizePixels),application);
 	}
 	private static final long FALLING_BLOCK_DELAY=1000000000l;//nano
 	private static final long BACKGROUND_UPDATE_DELAY=500000000l;//nano 
