@@ -7,6 +7,7 @@ import java.util.Objects;
 import tetris.shapes.Shape;
 import javafx.scene.canvas.GraphicsContext;
 import tetris.shapes.Rectangle;
+import tetris.logger.TetrisLogger;
 
 /////////BACKGROUND MANAGER////////
 public abstract class BackgroundManager{
@@ -16,13 +17,15 @@ public abstract class BackgroundManager{
 	public final Block block;
 	public final GraphicsContext gc;
 
+	private final TetrisLogger logger=TetrisLogger.getLogger();
+
 	public BackgroundManager(final Canvas canvas,final int HORIZONTAL_BLOCKS,final int VERTICAL_BLOCKS,final int blockSizePixels){
 		this.canvas=canvas;
 		this.HORIZONTAL_BLOCKS=HORIZONTAL_BLOCKS;
 		this.VERTICAL_BLOCKS=VERTICAL_BLOCKS;
 		this.blockSizePixels=blockSizePixels;
 		block=new Block(VERTICAL_BLOCKS,HORIZONTAL_BLOCKS,blockSizePixels,blockSizePixels);
-		System.out.println("backgroundManager init horizontal_blocks(HORIZONTAL_BLOCKS,VERTICAL_BLOCKS)"+HORIZONTAL_BLOCKS+","+VERTICAL_BLOCKS);
+		logger.logInfo("backgroundManager init horizontal_blocks(HORIZONTAL_BLOCKS,VERTICAL_BLOCKS)"+HORIZONTAL_BLOCKS+","+VERTICAL_BLOCKS);
 		gc=canvas.getGraphicsContext2D();
 	}
 
@@ -83,15 +86,15 @@ public abstract class BackgroundManager{
 			return occupiedBlocks[row][col];
 		}
 		/*public void setBlockColor(final int row,final int col,final Color color){
-			Objects.requireNonNull(color);
-			colors[row][col]=color;
+		  Objects.requireNonNull(color);
+		  colors[row][col]=color;
 		}
 		*/
 		public void setRectangle(final int row,final int col,final Rectangle rectangle){
 			rectangles[row][col]=rectangle;
 		}
 		/*public Color getBlockColor(final int row,final int col){
-			return colors[row][col];
+		  return colors[row][col];
 		}
 		*/
 		public boolean rowsColumnSame(final int row){
@@ -99,10 +102,10 @@ public abstract class BackgroundManager{
 			//final Color color=colors[row][0];
 			final Rectangle rectangle=rectangles[row][0];
 			/*for(int c=0;c<col;c++)
-				if(!occupiedBlocks[row][c] || color!=colors[row][c]){
-					return false;
-				}
-				*/
+			  if(!occupiedBlocks[row][c] || color!=colors[row][c]){
+			  return false;
+			  }
+			  */
 			for(int c=0;c<col;c++)
 				if(!occupiedBlocks[row][c] || rectangle.getFill() != rectangles[row][c].getFill())
 					return false;
@@ -135,20 +138,20 @@ public abstract class BackgroundManager{
 					if(isBlockOccupied(i,j))
 						System.out.print("X");
 					else System.out.print("-");
-				System.out.println();
+				//logger.logInfo();
 			}
 		}
 		public int updateBlock(){
-			System.out.println("UpdateBlock");
+			logger.logInfo("UpdateBlock");
 			printBlock();
 			int rowsMatched=0;
 			for(int r=0;r<row;r++){
-				System.out.println("row : "+r);
+				logger.logInfo("row : "+r);
 				if(rowsColumnSame(r)){
 					rowsMatched++;
 					setRowUnoccupied(r);
 				}
-				System.out.println("rowsMatched : "+rowsMatched);
+				logger.logInfo("rowsMatched : "+rowsMatched);
 			}
 			if(rowsMatched!=0){
 				for(int r=0;r<row;r++)

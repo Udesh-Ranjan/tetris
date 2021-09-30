@@ -9,8 +9,11 @@ import tetris.shapes.Shape;
 import tetris.enums.DIRECTION;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.google.common.util.concurrent.AtomicDouble;
+import tetris.logger.TetrisLogger;
 
 public class SolidBackgroundManager extends BackgroundManager{
+
+	private static TetrisLogger logger=TetrisLogger.getLogger();
 
 	public SolidBackgroundManager(final Canvas canvas,final int HORIZONTAL_BLOCKS,final int VERTICAL_BLOCKS,final int blockSizePixels){
 		super(canvas,HORIZONTAL_BLOCKS,VERTICAL_BLOCKS,blockSizePixels);
@@ -66,8 +69,8 @@ public class SolidBackgroundManager extends BackgroundManager{
 	}
 	@Override
 	public boolean isOutOfBoundary(final Shape shape,final DIRECTION direction){
-		System.out.println("isOutOfBoundary");
-		System.out.println("direction : "+direction);
+		logger.logInfo("isOutOfBoundary");
+		logger.logInfo("direction : "+direction);
 		AtomicDouble x,y;
 		x=new AtomicDouble(0);
 		y=new AtomicDouble(0);
@@ -82,7 +85,7 @@ public class SolidBackgroundManager extends BackgroundManager{
 		final AtomicBoolean outOfBoundary=new AtomicBoolean(false);
 		shape.rectangles.stream()
 			.forEach(rectangle->{
-				System.out.println("x,y "+rectangle.getX()+","+rectangle.getY());
+				logger.logInfo("x,y "+rectangle.getX()+","+rectangle.getY());
 				if(direction==DIRECTION.LEFT){
 					if(rectangle.getX()+x.get()<0)
 						outOfBoundary.set(true);//return true;
@@ -109,11 +112,11 @@ public class SolidBackgroundManager extends BackgroundManager{
 		for(int i=0;i<block.row;i++){
 			for(int j=0;j<block.col;j++){
 				/*Color color=block.colors[i][j];
-				gc.setFill(color);
-				gc.fillRect(j*blockSizePixels,i*blockSizePixels,blockSizePixels,blockSizePixels);
-				*/
+				  gc.setFill(color);
+				  gc.fillRect(j*blockSizePixels,i*blockSizePixels,blockSizePixels,blockSizePixels);
+				  */
 				Rectangle rectangle=block.rectangles[i][j];
-				System.out.println("rectangle : "+rectangle);
+				logger.logInfo("rectangle : "+rectangle);
 				rectangle.draw(gc);
 			}
 		}

@@ -5,12 +5,16 @@ import javafx.scene.paint.Paint;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.Objects;
 
+import tetris.logger.TetrisLogger;
+
 public class Rectangle{
 	private final javafx.scene.shape.Rectangle rectangle;
 
 	private static final double strokeWidth=1;
 	private static final Color stroke=Color.RED;
 	private static final Color fill=Color.WHITE;
+
+	private TetrisLogger logger=TetrisLogger.getLogger();
 
 	private static void init(final javafx.scene.shape.Rectangle rectangle){
 		Objects.requireNonNull(rectangle);
@@ -41,7 +45,7 @@ public class Rectangle{
 		setY(ver);
 	}
 	public void translate(final double x,final double y){
-		System.out.println("translate x: "+x+" y: "+y);
+		logger.logInfo("translate x: "+x+" y: "+y);
 		translateX(x);
 		translateY(y);
 	}
@@ -49,11 +53,11 @@ public class Rectangle{
 		rectangle.setX(x);
 	}
 	public void translateX(final double x){
-		System.out.println("transtateX "+x);
+		logger.logInfo("transtateX "+x);
 		rectangle.setX(getX()+x);
 	}
 	public void translateY(final double y){
-		System.out.println("transtateY "+y);
+		logger.logInfo("transtateY "+y);
 		rectangle.setY(getY()+y);
 	}
 	public void setY(final double y){

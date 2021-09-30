@@ -15,6 +15,7 @@ import tetris.shapes.Cube;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import tetris.application.GameApplication;
+import tetris.logger.TetrisLogger;
 
 public class FallingBlock implements EventHandler<KeyEvent>{
 	private static final int DELAY=200;//delay for 300 milliseconds
@@ -25,6 +26,8 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 	private final int blockSizePixels;
 	private final LongProperty lastTimeUpdated;//stores time in millisec
 	private final GameApplication application;
+
+	private TetrisLogger logger=TetrisLogger.getLogger();
 
 	public FallingBlock(BackgroundManager backgroundManager,Shape shape,GameApplication application){
 		Objects.requireNonNull(backgroundManager);
@@ -42,12 +45,12 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 		return queueShapes.peek();
 	}
 	public void draw(){
-		System.out.println("fallingBlock draw");
+		logger.logInfo("fallingBlock draw");
 		queueShapes.peek().draw(gc);
 		queueShapes.peek().rectangles.forEach(rectangle->{
-			System.out.println("(x,y) : "+rectangle.getX()+","+rectangle.getY());
+			logger.logInfo("(x,y) : "+rectangle.getX()+","+rectangle.getY());
 		});
-		System.out.println("xxxxxxxxxxxxxxxx");
+		logger.logInfo("xxxxxxxxxxxxxxxx");
 	}
 	//TODO
 	public Shape getRandomShape(){
@@ -57,27 +60,27 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 	}
 	//BLOCK IS FALLING
 	public void fall(){
-		System.out.println("Block is falling");
+		logger.logInfo("Block is falling");
 		if(backgroundManager.isCollision(queueShapes.peek(),DIRECTION.DOWN)){
-			System.out.println("Collision");
+			logger.logInfo("Collision");
 			backgroundManager.addShape(queueShapes.poll());
 			backgroundManager.block.updateBlock();
 			Shape shape=getRandomShape();
 			queueShapes.add(shape);
 		}else if(backgroundManager.isOutOfBoundary(queueShapes.peek(),DIRECTION.DOWN)){
-			System.out.println("OutOfBoundary");
+			logger.logInfo("OutOfBoundary");
 			backgroundManager.addShape(queueShapes.poll());
 			backgroundManager.block.updateBlock();
 			Shape shape=getRandomShape();
 			queueShapes.add(shape);
 		}else{
-			System.out.println("translating DOWN");
+			logger.logInfo("translating DOWN");
 			queueShapes.peek().translate(DIRECTION.DOWN);
 		}
 	}
 	@Override
 	public void handle(KeyEvent keyEvent){
-		System.out.println("FallingBlock handlingkeyevent");
+		logger.logInfo("FallingBlock handlingkeyevent");
 		final long time=System.currentTimeMillis();
 		//WE ARE WAITNG FOR SOME MILLISECONDS FOR NEXT TIME TO MOVE THE BLOCK
 		if(time-lastTimeUpdated.get() < DELAY)
@@ -116,9 +119,9 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 			x+=blockSizePixels;
 		}
 		if(collision)
-			System.out.println("Collision");
+			logger.logInfo("Collision");
 		if(outOfBoundary)
-			System.out.println("OutOfBoundary");
+			logger.logInfo("OutOfBoundary");
 
 		if(collision){
 			if(keyCode==KeyCode.DOWN){

@@ -46,20 +46,22 @@ import tetris.shapes.Cube;
 import tetris.backgroundManager.BackgroundManager;
 import tetris.backgroundManager.SolidBackgroundManager;
 import tetris.controller.GameController;
+import tetris.logger.TetrisLogger;
 
 public class GameApplication extends Application{
 	private Thread thread;
 	private volatile boolean running;
 	GameController gameController;
+	TetrisLogger logger=TetrisLogger.getLogger();
 	private void startGame(){
-		System.out.println("Game started");
+		logger.logInfo("Game started");
 		//running=true;
 		//thread=new Thread(new Game());
 		//thread.start();
 		gameController.start();
 	}
 	private void stopGame(){
-		System.out.println("Game stopped");
+		logger.logInfo("Game stopped");
 		//running=false;
 		gameController.stop();
 	}
@@ -73,17 +75,17 @@ public class GameApplication extends Application{
 
 	////////GameApplication////
 	public GameApplication(){
-		System.out.println("SCREEN_WIDTH : "+EnvironmentConstants.SCREEN_WIDTH);
-		System.out.println("SCREEN_HEIGHT : "+EnvironmentConstants.SCREEN_HEIGHT);
+		logger.logInfo("SCREEN_WIDTH : "+EnvironmentConstants.SCREEN_WIDTH);
+		logger.logInfo("SCREEN_HEIGHT : "+EnvironmentConstants.SCREEN_HEIGHT);
 		sizeWindows=EnvironmentConstants.computeEnvironSize();
-		Rectangle r = new Rectangle(25,25,250,250);
-		Rectangle rect=new Rectangle(0,0,100,100);
+		//Rectangle r = new Rectangle(25,25,250,250);
+		//Rectangle rect=new Rectangle(0,0,100,100);
 		int leftSize=sizeWindows.get(0);
 		int centerSize=sizeWindows.get(1);
 		int rightSize=sizeWindows.get(2);
 		blockSizePixels=centerSize/EnvironmentConstants.HORIZONTAL_BLOCKS;
-		System.out.println("Size : "+sizeWindows);
-		System.out.println("blockSizePixels : "+blockSizePixels);
+		logger.logInfo("Size : "+sizeWindows);
+		logger.logInfo("blockSizePixels : "+blockSizePixels);
 		//HBox hbox=new HBox();
 		//TilePane hbox=new TilePane();
 		AnchorPane anchorPane=new AnchorPane();
@@ -98,21 +100,22 @@ public class GameApplication extends Application{
 		left.setStyle("-fx-background-color: lime;");
 		//left.getChildren().add(r);
 		center=new Pane();
-		ColorInput ci = new ColorInput(center.getLayoutX(),
-				center.getLayoutY(),
-				center.getLayoutBounds().getWidth(),
-				center.getLayoutBounds().getHeight(),
-				Color.RED);
+		/*ColorInput ci = new ColorInput(center.getLayoutX(),
+		  center.getLayoutY(),
+		  center.getLayoutBounds().getWidth(),
+		  center.getLayoutBounds().getHeight(),
+		  Color.RED);
+		  */
 		//center.prefWidth(centerSize);
 		//center.prefHeight(400);
 		//center.setEffect(ci);
 		center.setMinSize(centerSize,EnvironmentConstants.VERTICAL_BLOCKS*blockSizePixels);
 		center.setStyle("-fx-background-color: black;");
-		r.setFill(Color.YELLOW);
+		//r.setFill(Color.YELLOW);
 		canvas=new Canvas(centerSize,EnvironmentConstants.SCREEN_HEIGHT);
 		GraphicsContext gc=canvas.getGraphicsContext2D();
-		gc.setFill(Color.BLUE);
-		gc.fillRect(0,75,100,100);
+		//gc.setFill(Color.BLUE);
+		//gc.fillRect(0,75,100,100);
 		center.getChildren().add(canvas);
 		//center.getChildren().add(r);
 		right=new Pane();
@@ -164,7 +167,7 @@ public class GameApplication extends Application{
 			@Override
 			public void handle(WindowEvent winEvent){
 				stopGame();
-				System.out.println("Exiting");
+				logger.logInfo("Exiting");
 				System.exit(0);
 			}
 		});
