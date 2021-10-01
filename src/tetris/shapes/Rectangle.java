@@ -33,6 +33,8 @@ public class Rectangle{
 	}
 
 	public void draw(final GraphicsContext gc){
+		logger.logInfo("draw Rectangle");
+		logger.logInfo("X,Y "+rectangle.getX()+","+rectangle.getY());
 		gc.setFill(rectangle.getFill());
 		gc.setStroke(rectangle.getStroke());
 		//gc.setStroke(rectangle.getStrokeWidth());

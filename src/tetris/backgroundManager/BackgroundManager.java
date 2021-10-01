@@ -63,12 +63,23 @@ public abstract class BackgroundManager{
 				for(int j=0;j<col;j++){
 					//colors[i][j]=DEFAULT_COLOR;
 					Rectangle rectangle=null;
-					rectangles[i][j]=rectangle=new Rectangle(i*BLOCK_WIDTH,j*BLOCK_HEIGHT,BLOCK_WIDTH,BLOCK_HEIGHT);
+					rectangles[i][j]=rectangle=new Rectangle(j*BLOCK_WIDTH,i*BLOCK_HEIGHT,BLOCK_WIDTH,BLOCK_HEIGHT);
 					rectangle.setFill(DEFAULT_FILL_COLOR);
 					rectangle.setStroke(DEFAULT_STROKE_COLOR);
 				}
 
 			}
+			logger.logInfo("Block Construction Starts");
+			logger.logInfo("row : "+row+" col : "+col);
+			for(int i=0;i<row;i++){
+				String str="";
+				for(int j=0;j<col;j++){
+					final Rectangle rectangle=rectangles[i][j];
+					str+="("+rectangle.getX()+","+rectangle.getY()+"), ";
+				}
+				logger.logInfo(str);
+			}
+			logger.logInfo("Block Construction Ends");
 		}
 		public void setBlockOccupied(final int row,final int col,final Rectangle rectangle){
 			occupiedBlocks[row][col]=true;
@@ -142,7 +153,7 @@ public abstract class BackgroundManager{
 			}
 		}
 		public int updateBlock(){
-			logger.logInfo("UpdateBlock");
+			logger.logInfo("Entering UpdateBlock");
 			printBlock();
 			int rowsMatched=0;
 			for(int r=0;r<row;r++){
@@ -151,20 +162,39 @@ public abstract class BackgroundManager{
 					rowsMatched++;
 					setRowUnoccupied(r);
 				}
-				logger.logInfo("rowsMatched : "+rowsMatched);
+				if(rowsMatched!=0)
+					logger.logInfo("Alert rowsMatched : "+rowsMatched);
+				else logger.logInfo("rowsMatched : "+rowsMatched);
 			}
+			/*
+			   if(rowsMatched!=0){
+			   for(int r=0;r<row;r++)
+			   for(int c=0;c<col;c++)
+			   if(isLeftBlock(r,c)){
+			   int _r=r;
+			   while(_r!=row-1 && !isBlockOccupied(_r+1,c))
+			   _r--;
+			   setBlockOccupied(_r,c,rectangles[r][c]);
+			   setBlockUnoccupied(r,c);
+			   }
+			   rowsMatched+=updateBlock();
+			   }
+			   */
 			if(rowsMatched!=0){
-				for(int r=0;r<row;r++)
-					for(int c=0;c<col;c++)
+				for(int r=row-1;r>=0;r--){
+					for(int c=0;c<col;c++){
 						if(isLeftBlock(r,c)){
-							int _r=r;
-							while(_r!=row-1 && !isBlockOccupied(_r+1,c))
-								_r--;
-							setBlockOccupied(_r,c,rectangles[r][c]);
+							int rr=r;
+							while(rr!=row-1 && !isBlockOccupied(rr+1,c))
+								rr++;
+							setBlockOccupied(rr,c,rectangles[r][c]);
 							setBlockUnoccupied(r,c);
 						}
+					}
+				}
 				rowsMatched+=updateBlock();
 			}
+			logger.logInfo("Exiting UpdateBlock with value : "+rowsMatched);
 			return rowsMatched;
 		}
 	}

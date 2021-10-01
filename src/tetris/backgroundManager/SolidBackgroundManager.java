@@ -107,19 +107,25 @@ public class SolidBackgroundManager extends BackgroundManager{
 	}
 	@Override
 	public void drawBackground(){
+		logger.logInfo("Entering drawBackground");
+		logger.logInfo("row : "+block.row+" col : "+block.col);
 		final GraphicsContext gc=canvas.getGraphicsContext2D();
 		//gc.fillRect(0,0,HOROZONTAL_BLOCKS*blockSizePixel,VERTICAL_BLOCKS*blockSizePixel);
 		for(int i=0;i<block.row;i++){
+			String str="";
 			for(int j=0;j<block.col;j++){
 				/*Color color=block.colors[i][j];
 				  gc.setFill(color);
 				  gc.fillRect(j*blockSizePixels,i*blockSizePixels,blockSizePixels,blockSizePixels);
 				  */
 				Rectangle rectangle=block.rectangles[i][j];
-				logger.logInfo("rectangle : "+rectangle);
+				str+="("+rectangle.getX()+","+rectangle.getY()+"), ";
+				//logger.logInfo("rectangle : "+rectangle);
 				rectangle.draw(gc);
 			}
+			logger.logInfo(str);
 		}
+		logger.logInfo("Exiting drawBackground");
 	}
 	@Override
 	public void addShape(final Shape shape){
