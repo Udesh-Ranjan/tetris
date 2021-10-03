@@ -24,8 +24,19 @@ public class Rectangle{
 	}
 	public Rectangle(final javafx.scene.shape.Rectangle rectangle){
 		Objects.requireNonNull(rectangle);
-		this.rectangle=rectangle;
-		init(this.rectangle);
+		this.rectangle=new javafx.scene.shape.Rectangle(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
+		this.rectangle.setStroke(rectangle.getStroke());
+		this.rectangle.setStrokeWidth(rectangle.getStrokeWidth());
+		this.rectangle.setFill(rectangle.getFill());
+		//init(this.rectangle);
+	}
+	public Rectangle(final Rectangle rectangle){
+		Objects.requireNonNull(rectangle);
+		this.rectangle=new javafx.scene.shape.Rectangle(rectangle.getX(),rectangle.getY(),rectangle.getWidth(),rectangle.getHeight());
+		this.rectangle.setStroke(rectangle.getStroke());
+		this.rectangle.setStrokeWidth(rectangle.getStrokeWidth());
+		this.rectangle.setFill(rectangle.getFill());
+		//init(this.rectangle);
 	}
 	public Rectangle(final double x,final double y,final double width,final double height){
 		rectangle=new javafx.scene.shape.Rectangle(x,y,width,height);
@@ -33,8 +44,8 @@ public class Rectangle{
 	}
 
 	public void draw(final GraphicsContext gc){
-		logger.logInfo("draw Rectangle");
-		logger.logInfo("X,Y "+rectangle.getX()+","+rectangle.getY());
+		//logger.logInfo("draw Rectangle");
+		//logger.logInfo("X,Y "+rectangle.getX()+","+rectangle.getY());
 		gc.setFill(rectangle.getFill());
 		gc.setStroke(rectangle.getStroke());
 		//gc.setStroke(rectangle.getStrokeWidth());
@@ -47,7 +58,7 @@ public class Rectangle{
 		setY(ver);
 	}
 	public void translate(final double x,final double y){
-		logger.logInfo("translate x: "+x+" y: "+y);
+		//logger.logInfo("translate x: "+x+" y: "+y);
 		translateX(x);
 		translateY(y);
 	}
@@ -55,11 +66,11 @@ public class Rectangle{
 		rectangle.setX(x);
 	}
 	public void translateX(final double x){
-		logger.logInfo("transtateX "+x);
+		//logger.logInfo("transtateX "+x);
 		rectangle.setX(getX()+x);
 	}
 	public void translateY(final double y){
-		logger.logInfo("transtateY "+y);
+		//logger.logInfo("transtateY "+y);
 		rectangle.setY(getY()+y);
 	}
 	public void setY(final double y){

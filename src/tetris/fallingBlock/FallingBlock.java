@@ -16,6 +16,7 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import tetris.application.GameApplication;
 import tetris.logger.TetrisLogger;
+import java.util.logging.Level;
 
 public class FallingBlock implements EventHandler<KeyEvent>{
 	private static final int DELAY=200;//delay for 300 milliseconds
@@ -46,11 +47,13 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 	}
 	public void draw(){
 		logger.logInfo("fallingBlock draw");
-		queueShapes.peek().draw(gc);
-		queueShapes.peek().rectangles.forEach(rectangle->{
-			logger.logInfo("(x,y) : "+rectangle.getX()+","+rectangle.getY());
-		});
-		logger.logInfo("xxxxxxxxxxxxxxxx");
+		Shape shape=queueShapes.peek();
+		if(shape!=null){
+			shape.draw(gc);
+			shape.rectangles.forEach(rectangle->{
+				logger.logInfo("(x,y) : "+rectangle.getX()+","+rectangle.getY());
+			});
+		}else logger.log(Level.WARNING,"shape is null");
 	}
 	//TODO
 	public Shape getRandomShape(){
@@ -61,22 +64,25 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 	//BLOCK IS FALLING
 	public void fall(){
 		logger.logInfo("Block is falling");
-		if(backgroundManager.isCollision(queueShapes.peek(),DIRECTION.DOWN)){
-			logger.logInfo("Collision");
-			backgroundManager.addShape(queueShapes.poll());
-			backgroundManager.block.updateBlock();
-			Shape shape=getRandomShape();
-			queueShapes.add(shape);
-		}else if(backgroundManager.isOutOfBoundary(queueShapes.peek(),DIRECTION.DOWN)){
-			logger.logInfo("OutOfBoundary");
-			backgroundManager.addShape(queueShapes.poll());
-			backgroundManager.block.updateBlock();
-			Shape shape=getRandomShape();
-			queueShapes.add(shape);
-		}else{
-			logger.logInfo("translating DOWN");
-			queueShapes.peek().translate(DIRECTION.DOWN);
-		}
+		Shape shape=queueShapes.peek();
+		if(shape!=null){
+			if(backgroundManager.isCollision(queueShapes.peek(),DIRECTION.DOWN)){
+				logger.logInfo("Collision");
+				backgroundManager.addShape(queueShapes.poll());
+				backgroundManager.block.updateBlock();
+				shape=getRandomShape();
+				queueShapes.add(shape);
+			}else if(backgroundManager.isOutOfBoundary(queueShapes.peek(),DIRECTION.DOWN)){
+				logger.logInfo("OutOfBoundary");
+				backgroundManager.addShape(queueShapes.poll());
+				backgroundManager.block.updateBlock();
+				shape=getRandomShape();
+				queueShapes.add(shape);
+			}else{
+				logger.logInfo("translating DOWN");
+				shape.translate(DIRECTION.DOWN);
+			}
+		}else logger.log(Level.WARNING,"shape is null");
 	}
 	@Override
 	public void handle(KeyEvent keyEvent){
@@ -130,7 +136,10 @@ public class FallingBlock implements EventHandler<KeyEvent>{
 				queueShapes.add(shape);
 			}
 		}else if(!outOfBoundary){
-			queueShapes.peek().translate(x,y);
+			Shape shape=queueShapes.peek();
+			if(shape!=null)
+				shape.translate(x,y);
+			else logger.log(Level.WARNING,"shape is null ");
 		}
 		lastTimeUpdated.set(time);
 	}

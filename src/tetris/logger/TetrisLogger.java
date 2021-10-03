@@ -41,6 +41,7 @@ public final class TetrisLogger{
 					tetrisLogger.logInfo("Exception while cleaning previous files : "+ioException.toString());
 				}
 			}
+			System.setErr(out);
 		}catch(Exception exception){
 			exception.printStackTrace();
 		}

@@ -44,6 +44,7 @@ public abstract class BackgroundManager{
 		//public final Color colors[][];
 		public final Rectangle rectangles[][];
 		final Color DEFAULT_FILL_COLOR=Color.GREY,DEFAULT_STROKE_COLOR=Color.BLACK;
+		final float DEFAULT_STROKE_WIDTH=1.0f;
 		final int BLOCK_WIDTH,BLOCK_HEIGHT;
 
 		public Block(final int row,final int col,final int blockWidth,final int blockHeight){
@@ -66,6 +67,7 @@ public abstract class BackgroundManager{
 					rectangles[i][j]=rectangle=new Rectangle(j*BLOCK_WIDTH,i*BLOCK_HEIGHT,BLOCK_WIDTH,BLOCK_HEIGHT);
 					rectangle.setFill(DEFAULT_FILL_COLOR);
 					rectangle.setStroke(DEFAULT_STROKE_COLOR);
+					rectangle.setStrokeWidth(DEFAULT_STROKE_WIDTH);
 				}
 
 			}
@@ -89,9 +91,13 @@ public abstract class BackgroundManager{
 		public void setBlockUnoccupied(final int row,final int col){
 			occupiedBlocks[row][col]=false;
 			//setBlockColor(row,col,DEFAULT_COLOR);
-			Rectangle rectangle = rectangles[row][col];
+			final Rectangle oldRectangle = rectangles[row][col];
+			final Rectangle rectangle=new Rectangle(oldRectangle.getX(),oldRectangle.getY(),oldRectangle.getWidth(),
+					oldRectangle.getHeight());
 			rectangle.setFill(DEFAULT_FILL_COLOR);
 			rectangle.setStroke(DEFAULT_STROKE_COLOR);
+			rectangle.setStrokeWidth(DEFAULT_STROKE_WIDTH);
+			setRectangle(row,col,rectangle);
 		}
 		public boolean isBlockOccupied(final int row,final int col){
 			return occupiedBlocks[row][col];
@@ -152,50 +158,127 @@ public abstract class BackgroundManager{
 				//logger.logInfo();
 			}
 		}
+		private void printBlockStructure(){
+			for(int i=0;i<row;i++){
+				String str="";
+				for(int j=0;j<col;j++)
+					str+=(isBlockOccupied(i,j)?"X":"O");
+				logger.logInfo(str);
+			}
+		}
+		private void logBlockColor(){
+			for(int i=0;i<row;i++){
+				String str="";
+				for(int j=0;j<col;j++)
+					str+=rectangles[i][j].getFill().toString()+",";
+				logger.logInfo(str);
+			}
+		}
 		public int updateBlock(){
 			logger.logInfo("Entering UpdateBlock");
 			printBlock();
+			int tot=0;
 			int rowsMatched=0;
-			for(int r=0;r<row;r++){
-				logger.logInfo("row : "+r);
-				if(rowsColumnSame(r)){
-					rowsMatched++;
-					setRowUnoccupied(r);
+			do{
+				rowsMatched=0;
+				for(int r=0;r<row;r++){
+					logger.logInfo("row : "+r);
+					if(rowsColumnSame(r)){
+						rowsMatched++;
+						setRowUnoccupied(r);
+					}
+					if(rowsMatched!=0)
+						logger.logInfo("Alert rowsMatched : "+rowsMatched);
+					else logger.logInfo("rowsMatched : "+rowsMatched);
 				}
-				if(rowsMatched!=0)
-					logger.logInfo("Alert rowsMatched : "+rowsMatched);
-				else logger.logInfo("rowsMatched : "+rowsMatched);
-			}
-			/*
-			   if(rowsMatched!=0){
-			   for(int r=0;r<row;r++)
-			   for(int c=0;c<col;c++)
-			   if(isLeftBlock(r,c)){
-			   int _r=r;
-			   while(_r!=row-1 && !isBlockOccupied(_r+1,c))
-			   _r--;
-			   setBlockOccupied(_r,c,rectangles[r][c]);
-			   setBlockUnoccupied(r,c);
-			   }
-			   rowsMatched+=updateBlock();
-			   }
-			   */
-			if(rowsMatched!=0){
-				for(int r=row-1;r>=0;r--){
-					for(int c=0;c<col;c++){
-						if(isLeftBlock(r,c)){
-							int rr=r;
-							while(rr!=row-1 && !isBlockOccupied(rr+1,c))
-								rr++;
-							setBlockOccupied(rr,c,rectangles[r][c]);
-							setBlockUnoccupied(r,c);
+				tot+=rowsMatched;
+				if(rowsMatched!=0){
+					for(int r=row-2;r>=0;r--){
+						for(int c=0;c<col;c++){
+							if(isLeftBlock(r,c)){
+								boolean grid[][]=getConnectedBlocks(null,r,c);
+								boolean gridBackup[][]=java.util.Arrays.stream(grid)
+									.map(boolean[]::clone)
+									.toArray(boolean [][]::new);
+								logger.logInfo("gridBackup : ");
+								for(int i=0;i<row;i++){
+									String str="";
+									for(int j=0;j<col;j++)
+										str+=(gridBackup[i][j]?"X":"O");
+									logger.logInfo(str);
+								}
+								int shiftDown=0;
+								boolean exe=false;
+								do{
+									exe=true;
+									//checking weather we can move the block down
+									for(int i=row-1;i>=0 && exe;i--)
+										for(int j=0;j<col && exe;j++)
+											if(grid[i][j]){
+												if(i==row-1)
+													exe=false;
+												//if the below block is occupied but it
+												//is not a part of the grid
+												if(i+1<row && isBlockOccupied(i+1,j) && !grid[i+1][j])
+													exe=false;
+											}
+									//if exe is true means we will move the block down
+									if(exe){
+										shiftDown++;
+										for(int i=row-1;i>=0;i--)
+											for(int j=0;j<col;j++)
+												if(grid[i][j]){
+													grid[i][j]=false;
+													grid[i+1][j]=true;
+												}
+
+									}
+								}while(exe);
+								//Shifting the Block down
+								if(shiftDown!=0){
+									logger.logInfo("shiftDown : "+shiftDown);
+									for(int i=row-1;i>=0;i--)
+										for(int j=0;j<col;j++)
+											if(gridBackup[i][j]){
+												final Rectangle rectangle=rectangles[i][j];
+												final Rectangle newRectangle=
+													new Rectangle(rectangle);
+												setBlockOccupied(i+shiftDown,j,newRectangle);
+												setBlockUnoccupied(i,j);
+											}
+
+									logger.logInfo("after shifting block structure : ");
+									printBlockStructure();
+									logger.logInfo("block colors");
+									logBlockColor();
+								}
+							}
+							//if(isLeftBlock ends
 						}
 					}
 				}
-				rowsMatched+=updateBlock();
+			}while(rowsMatched!=0);
+			if(tot!=0)
+				printBlockStructure();
+			logger.logInfo("Exiting UpdateBlock with value : "+tot);
+			return tot;
+		}
+		boolean [][] getConnectedBlocks(boolean [][] grid,final int r,final int c){
+			if(grid==null){
+				grid=new boolean[row][col];
+				for(int i=0;i<row;i++)
+					grid[i]=new boolean[col];
 			}
-			logger.logInfo("Exiting UpdateBlock with value : "+rowsMatched);
-			return rowsMatched;
+			grid[r][c]=true;
+			if(r+1<row && !grid[r+1][c] && isBlockOccupied(r+1,c))
+				getConnectedBlocks(grid,r+1,c);
+			if(r-1>=0 && !grid[r-1][c] && isBlockOccupied(r-1,c))
+				getConnectedBlocks(grid,r-1,c);
+			if(c+1<col && !grid[r][c+1] && isBlockOccupied(r,c+1))
+				getConnectedBlocks(grid,r,c+1);
+			if(c-1>=0 && !grid[r][c-1] && isBlockOccupied(r,c-1))
+				getConnectedBlocks(grid,r,c-1);
+			return grid;
 		}
 	}
 	/////////////////////////
