@@ -149,15 +149,16 @@ public abstract class BackgroundManager{
 					return true;
 			return false;
 		}
-		private void printBlock(){
-			for(int i=0;i<row;i++){
-				for(int j=0;j<col;j++)
-					if(isBlockOccupied(i,j))
-						System.out.print("X");
-					else System.out.print("-");
-				//logger.logInfo();
-			}
+		/*private void printBlock(){
+		  for(int i=0;i<row;i++){
+		  for(int j=0;j<col;j++)
+		  if(isBlockOccupied(i,j))
+		  System.out.print("X");
+		  else System.out.print("-");
+		//logger.logInfo();
+		  }
 		}
+		*/
 		private void printBlockStructure(){
 			for(int i=0;i<row;i++){
 				String str="";
@@ -176,7 +177,6 @@ public abstract class BackgroundManager{
 		}
 		public int updateBlock(){
 			logger.logInfo("Entering UpdateBlock");
-			printBlock();
 			int tot=0;
 			int rowsMatched=0;
 			do{
@@ -243,14 +243,15 @@ public abstract class BackgroundManager{
 												final Rectangle rectangle=rectangles[i][j];
 												final Rectangle newRectangle=
 													new Rectangle(rectangle);
-												setBlockOccupied(i+shiftDown,j,newRectangle);
+												newRectangle.setY(rectangle.getY()+rectangle.getHeight()*shiftDown);
 												setBlockUnoccupied(i,j);
+												setBlockOccupied(i+shiftDown,j,newRectangle);
 											}
 
 									logger.logInfo("after shifting block structure : ");
 									printBlockStructure();
-									logger.logInfo("block colors");
-									logBlockColor();
+									//logger.logInfo("block colors");
+									//logBlockColor();
 								}
 							}
 							//if(isLeftBlock ends
